@@ -7,6 +7,7 @@ See file ui.view.list.js for main code.
 Working example can be run from index.html
 
 Supported:
+
 - local pagination
 - sorting by one column
 - searching by any column text
@@ -14,6 +15,7 @@ Supported:
 - view card binded to selected grid item
 
 Plan to support:
+
 - server-side pagination option
 - external editor for selected grid item
 - sorting by any column
