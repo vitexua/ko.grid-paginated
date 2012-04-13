@@ -1,0 +1,46 @@
+
+div.dataTables_length label {
+	width: 460px;
+	float: left;
+	text-align: left;
+}
+
+div.dataTables_length {
+	display: none;
+}
+
+div.dataTables_length select {
+	width: 75px;
+	float: left;
+}
+div.dataTables_length span {
+	float: left;
+	padding-left: 10px;
+}
+
+div.dataTables_filter label {
+	line-height: 25px;
+	padding: 0;
+	margin: 0;
+}
+div.dataTables_filter span {
+	float: left;
+	padding-right: 10px;
+}
+
+div.dataTables_info {
+	padding-top: 8px;
+}
+
+div.dataTables_paginate {
+	margin: 0;
+}
+
+table {
+	margin: 1em 0;
+	clear: both;
+}
+
+table.dataTable th:active {
+	outline: none;
+}
