@@ -3,11 +3,12 @@
     ui.view.list = function(options) {
         var self = this;
 
-        this.localMode = options.localMode;
+        this.localMode = options.localMode; // [true, false]
         this.ajaxMethod = options.ajaxMethod;
-        this.storeFields = options.storeFields || [];
-        this.listSortableField = options.listSortableField;
-        this.listSearchableFields = options.listSearchableFields;
+        this.dataFormat = options.dataFormat || 'object'; // ['object', 'array']
+        this.storeFields = options.storeFields || []; // ['name1', 'name2']
+        this.listSortableField = options.listSortableField; // string
+        this.listSearchableFields = options.listSearchableFields; // ['name1', 'name2']
 
         this.events = {};
         _.extend(this.events, Backbone.Events);
@@ -48,11 +49,16 @@
             });
 
             var _data = {};
-            _.each(data, function(value, index){
-                _data[self.storeFields[index]] = value;
+                if(self.dataFormat == 'array') {
+                _.each(data, function(value, index){
+                    _data[self.storeFields[index]] = value;
+                });
+            } else {
+                _data = data;
+            }
+            _.each(options.storeFields, function(field){
+                _itemModel[field] = ko.observable(_data[field]);
             });
-            this.id = ko.observable(_data.id);
-            this.name = ko.observable(_data.name);
         };
 
         this.collection = ko.observableArray([]);
@@ -62,14 +68,29 @@
             self._higlighRow(self.viewItem().id());
         });
 
+        this.load = function(callback) {
+            ui.ajax.list.load(self, function(resp){
+                self.loadPagedData(resp);
+                callback && callback(resp);
+            });
+        };
 
         this.localSearch = ko.observable();
+        this.remoteSearch = ko.observable().extend({ throttle: 300 });;
+        this.remoteSearch.subscribe(function(){
+            if(self.pageIndex() == 1) {
+                self.load();
+            } else {
+                self.pageIndex(1);
+            }
+        });
 
         this.pageIndex = ko.observable(1).extend({ throttle: 2 });
         this.pageIndex.subscribe(function(){
             self._clearAllChecked();
             self.checkedAll(false);
             !self.localMode && self.load();
+            ui.routes.set('menu1');
         });
         this.perPage = ko.observable(options.perPage || 10);
 
@@ -86,7 +107,7 @@
 
         this.filteredList = ko.dependentObservable(function() {
             self.sort();
-            var filter = self.localSearch();
+            var filter = self.localMode && self.localSearch();
             if (!filter || filter.toString().length < 1) {
                 return self.list();
             } else {
@@ -160,6 +181,16 @@
                 self.pageIndex(self.pageIndex() + 1);
             }
         };
+        this.setFirstPage = function() {
+            if(self.pageIndex() != 1) {
+                self.pageIndex(1);
+            }
+        };
+        this.setLastPage = function() {
+            if(self.pageIndex() != self.pages()) {
+                self.pageIndex(self.pages());
+            }
+        };
 
         this.checkedAll = ko.observable(false).extend({ throttle: 1 });
         this.checkedAll.subscribe(function(){
@@ -176,6 +207,12 @@
             }
         });
 
+        this.getItemDataById = function(id) {
+            return ko.utils.arrayFirst(self.list(), function(item) {
+                return id === item.id();
+            });
+        };
+
         this.openItem = function(data) {
             data.checked(true);
             self.mode('view');
@@ -187,16 +224,20 @@
         };
         this.clickItem = function(data) {
             this.events.trigger('rowclick', data.id());
+            ui.routes.set('menu1/'+data.id());
+        };
+        this.showItem = function(id) {
             _.each(self.list(), function(item){
                 item.checked(false);
             });
-            self.openItem(data);
+            var item = self.getItemDataById(id);
+            item && self.openItem(item);
         };
 
         this.edit = function() {
             self.editItem(self.viewItem());
-            self.mode('edit');
-        };    
+            self.viewMode('edit');
+        };
 
         this.getSelectedIds = function() {
             var ids = [];
@@ -208,9 +249,9 @@
 
         this.loadPagedData = function(data) {
             self.list.removeAll();
-            var numFound = parseInt(data.num_found, 10);
-            var totalPages = Math.ceil( numFound / self.perPage() ) || 1;
-            self.pages(totalPages);
+            var numFound = data.num_found && parseInt(data.num_found, 10);
+            var totalPages = numFound && Math.ceil( numFound / self.perPage() ) || 1;
+            totalPages && self.pages(totalPages);
             self.loadData(data.list);
         };
 
@@ -220,9 +261,7 @@
             });
         };
 
-        this.load = function() {
-            ui.ajax.list.load(self, self.loadPagedData);
-        };
+
 
     };
 }).apply(ui.view);

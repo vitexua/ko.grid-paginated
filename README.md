@@ -19,15 +19,15 @@ Supported:
 - API as knockout observables and custom menthods
 - local pagination
 - sorting by one column
-- searching by any column text
+- searching by any column
 - multiple selection (in current page scope)
 - view card binded to selected grid item
+- server-side pagination option (sorting and search will also be remote in this case)
 
 Plan to support:
 
 - url hash routing by BackboneJS
 - grid events API
-- server-side pagination option (sorting and search will also be remote in this case)
 - external editor for selected grid item
 - sorting by any column
 - custom bulk methods
