@@ -96,13 +96,17 @@
 
 
 <script id="menu1GridPager" type="text/html">
-  <li><a href="#" data-bind="click: function() { menu1.setPrevPage(); }">Prev</a></li>
-  <% for(var i=1; i <= menu1.pages(); i++) { %>    
-    <% (function(index) { %>
-    <li<%= (menu1.pageIndex() == index) ? ' class="active"' : '' %>><a href="#" data-bind="click: function() { menu1.setPage(index); }"><%= index %></a></li>
-    <% })(i); %>
-  <% } %>
-  <li><a href="#" data-bind="click: function() { menu1.setNextPage(); }">Next</a></li>
+    <li data-bind="attr: { 'class': (menu1.pageIndex() == 1) ? 'active' : ''}"><a href="#" data-bind="click: function() { menu1.setFirstPage(); }">First</a></li>
+    <li data-bind="attr: { 'class': (menu1.pageIndex() == 1) ? 'active' : ''}"><a href="#" data-bind="click: function() { menu1.setPrevPage(); }">Prev</a></li>
+    <li data-bind="visible: ((menu1.pageIndex()-3) > 0)" class="active"><a href="#">...</a></li>
+    <li data-bind="visible: ((menu1.pageIndex()-2) > 0)"><a href="#" data-bind="click: function() { menu1.setPage(menu1.pageIndex()-2); }"><%= (menu1.pageIndex()-2) %></a></li>
+    <li data-bind="visible: ((menu1.pageIndex()-1) > 0)"><a href="#" data-bind="click: function() { menu1.setPage(menu1.pageIndex()-1); }"><%= (menu1.pageIndex()-1) %></a></li>
+    <li class="active"><a href="#"><%= menu1.pageIndex() %></a></li>
+    <li data-bind="visible: ((menu1.pageIndex()+1) <= menu1.pages())"><a href="#" data-bind="click: function() { menu1.setPage(menu1.pageIndex()+1); }"><%= (menu1.pageIndex()+1) %></a></li>
+    <li data-bind="visible: ((menu1.pageIndex()+2) <= menu1.pages())"><a href="#" data-bind="click: function() { menu1.setPage(menu1.pageIndex()+2); }"><%= (menu1.pageIndex()+2) %></a></li>
+    <li data-bind="visible: ((menu1.pageIndex()+3) <= menu1.pages())" class="active"><a href="#">...</a></li>
+    <li data-bind="attr: { 'class': (menu1.pageIndex() == menu1.pages()) ? 'active' : ''}"><a href="#" data-bind="click: function() { menu1.setNextPage(); }">Next</a></li>
+    <li data-bind="attr: { 'class': (menu1.pageIndex() == menu1.pages()) ? 'active' : ''}"><a href="#" data-bind="click: function() { menu1.setLastPage(); }">Last</a></li>
 </script>
 
     <!-- Le javascript
