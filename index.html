@@ -50,11 +50,11 @@
 
     <div class="container">
 
-<table style="width: 100%"><tbody><tr><td>
+<table style="width: 100%"><tbody><tr><td width="50%">
 
       <p><input type="text" placeholder="Search..." data-bind="value: menu1.localSearch, valueUpdate: 'afterkeydown'"></p>
 
-      <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-condensed">
+      <table id="menu1-grid" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-condensed">
         <thead>
           <tr>
             <th><input type="checkbox" data-bind="checked: menu1.checkedAll" /></th>
@@ -78,9 +78,17 @@
 
 </td><td>
 
+    <div class="view-card" data-bind="visible: (menu1.viewMode() == 'show')">
       <p>id: <span data-bind="text: menu1.viewItem().id"></span></p>
       <p>name: <span data-bind="text: menu1.viewItem().name"></span></p>
       <p><button class="btn" data-bind="click: menu1.edit">Edit info</button></p>
+    </div>
+    <div class="view-card" data-bind="visible: (menu1.viewMode() == 'empty')">
+        select one item to view
+    </div>
+    <div class="view-card" data-bind="visible: (menu1.viewMode() == 'load')">
+        loading...
+    </div>
 
 </td></tr></table>
 
@@ -116,6 +124,7 @@
     <script src="js/lib/json2.js"></script>
     <script src="js/lib/jquery.dataTables.js"></script>    
     <script src="js/lib/bootstrap-datatables.js"></script>
+    <script src="js/lib/amplify.js"></script>
     <script src="js/lib/underscore.js"></script>
     <script src="js/lib/backbone.js"></script>
     <script src="js/lib/knockout-2.0.0.debug.js"></script>
@@ -124,6 +133,7 @@
     <script src="js/lib/ko-underscore-templates.js"></script>
 
     <script src="js/ui.js"></script>
+    <script src="js/ui.ajax.js"></script>
     <script src="js/view/ui.view.list.js"></script>
     <script src="js/app.js"></script>
 
